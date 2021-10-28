@@ -23,7 +23,7 @@ public class Bet {
     private User user;
 
     @OneToOne
-    private BetPart part;
+    private Team team;
 
     private LocalDateTime creationDate = LocalDateTime.now();
 
@@ -31,11 +31,11 @@ public class Bet {
 
     private Bet() {}
 
-    public Bet(Match match, Double value, User user, BetPart part) {
+    public Bet(Match match, Double value, User user, Team team) {
         this.match = match;
         this.value = value;
         this.user = user;
-        this.part = part;
+        this.team = team;
     }
 
     public Long getId() {
@@ -66,12 +66,12 @@ public class Bet {
         this.user = user;
     }
 
-    public BetPart getPart() {
-        return part;
+    public Team getTeam() {
+        return team;
     }
 
-    public void setPart(BetPart part) {
-        this.part = part;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public LocalDateTime getCreationDate() {

@@ -25,30 +25,30 @@ public class Match {
     private LocalDateTime beginDate;
 
     @OneToOne
-    private BetPart partOne;
+    private Team teamOne;
 
     @OneToOne
-    private BetPart partTwo;
+    private Team teamTwo;
     
     private BetTimeStatus betTimeStatus = BetTimeStatus.CLOSED;
 
     private Match() {}
 
-    public Match(String title, LocalDateTime beginDate, BetPart partOne, BetPart partTwo) {
+    public Match(String title, LocalDateTime beginDate, Team teamOne, Team teamTwo) {
         this.title = title;
         this.beginDate = beginDate;
-        this.partOne = partOne;
-        this.partTwo = partTwo;
+        this.teamOne = teamOne;
+        this.teamTwo = teamTwo;
     }
 
-    public Match(LocalDateTime beginDate, BetPart partOne, BetPart partTwo) {
+    public Match(LocalDateTime beginDate, Team teamOne, Team teamTwo) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm");
         String begin = beginDate.format(formatter);
 
-        this.title = String.format("%s x %s - %s", partOne.getName(), partTwo.getName(), begin);
+        this.title = String.format("%s x %s - %s", teamOne.getName(), teamTwo.getName(), begin);
         this.beginDate = beginDate;
-        this.partOne = partOne;
-        this.partTwo = partTwo;
+        this.teamOne = teamOne;
+        this.teamTwo = teamTwo;
     }
 
     public Long getId() {
@@ -83,20 +83,20 @@ public class Match {
         this.beginDate = beginDate;
     }
 
-    public BetPart getPartOne() {
-        return partOne;
+    public Team getTeamOne() {
+        return teamOne;
     }
 
-    public void setPartOne(BetPart partOne) {
-        this.partOne = partOne;
+    public void setTeamOne(Team teamOne) {
+        this.teamOne = teamOne;
     }
 
-    public BetPart getPartTwo() {
-        return partTwo;
+    public Team getTeamTwo() {
+        return teamTwo;
     }
 
-    public void setPartTwo(BetPart partTwo) {
-        this.partTwo = partTwo;
+    public void setTeamTwo(Team teamTwo) {
+        this.teamTwo = teamTwo;
     }
 
     public BetTimeStatus getBetTimeStatus() {

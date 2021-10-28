@@ -6,13 +6,13 @@ public enum MatchStatus {
     FINISHED("Finished"),
     CANCELED("Canceled");
 
-    private String description;
+    private String value;
 
-    MatchStatus (String description) {
-        this.description = description;
+    MatchStatus (String value) {
+        this.value = value;
     }
 
-    public String getDescription() {
-        return description;
+    public String getValue() {
+        return value;
     }
 }

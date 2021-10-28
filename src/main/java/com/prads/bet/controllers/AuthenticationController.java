@@ -5,6 +5,8 @@ import com.prads.bet.controllers.dto.TokenDTO;
 import com.prads.bet.controllers.form.LoginForm;
 import com.prads.bet.exception.NonExpiredJwtException;
 import io.jsonwebtoken.impl.DefaultClaims;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
+    private final static Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
 
     @Autowired
     private AuthenticationManager authManager;
@@ -39,12 +42,13 @@ public class AuthenticationController {
 
             return ResponseEntity.ok(new TokenDTO(token, "Bearer"));
         } catch (AuthenticationException exception) {
-            return ResponseEntity.badRequest().build();
+            LOGGER.error("Couldn't to authenticated user.");
+            return ResponseEntity.badRequest().body("Couldn't to authenticated user.");
         }
     }
 
     @GetMapping(value = "/refreshtoken")
-    public ResponseEntity<?> refreshtoken(/*@RequestHeader("Authorization") String bearerToken*/ HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> refreshtoken(HttpServletRequest request) {
         try {
             DefaultClaims claims = (io.jsonwebtoken.impl.DefaultClaims) request.getAttribute("claims");
 
@@ -52,12 +56,13 @@ public class AuthenticationController {
             String token = tokenService.refreshToken(expectedMap, expectedMap.get("sub").toString());
             return ResponseEntity.ok(new TokenDTO(token, "Bearer"));
         } catch (NonExpiredJwtException exception) {
-            return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
+            LOGGER.error("Jwt not expired.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Jwt not expired.");
         }
 
     }
 
-    public Map<String, Object> getMapFromIoJsonwebtokenClaims(DefaultClaims claims) {
+    private Map<String, Object> getMapFromIoJsonwebtokenClaims(DefaultClaims claims) {
         try {
             Map<String, Object> expectedMap = new HashMap<String, Object>();
             for (Map.Entry<String, Object> entry : claims.entrySet()) {

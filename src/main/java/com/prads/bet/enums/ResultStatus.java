@@ -5,13 +5,13 @@ public enum ResultStatus {
     DEFEAT("Defeat"),
     COMING("Coming");
 
-    private String description;
+    private String status;
 
-    ResultStatus(String description) {
-        this.description = description;
+    ResultStatus(String status) {
+        this.status = status;
     }
 
-    public String getDescription() {
-        return description;
+    public String getStatus() {
+        return status;
     }
 }

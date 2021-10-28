@@ -4,13 +4,13 @@ public enum BetTimeStatus {
     OPENED("Opened"),
     CLOSED("Closed");
 
-    private String description;
+    private String value;
 
-    BetTimeStatus (String description) {
-        this.description = description;
+    BetTimeStatus (String value) {
+        this.value = value;
     }
 
-    public String getDescription() {
-        return description;
+    public String getValue() {
+        return value;
     }
 }

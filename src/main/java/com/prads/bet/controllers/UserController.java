@@ -4,7 +4,10 @@ import com.prads.bet.controllers.dto.UserDTO;
 import com.prads.bet.controllers.form.PassUpdateForm;
 import com.prads.bet.controllers.form.UserForm;
 import com.prads.bet.controllers.form.UserUpdateForm;
+import com.prads.bet.enums.RolesIdEnums;
+import com.prads.bet.models.Profile;
 import com.prads.bet.models.User;
+import com.prads.bet.repository.ProfileRepository;
 import com.prads.bet.repository.UserRepository;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
@@ -33,6 +36,9 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
+    private ProfileRepository profileRepository;
+
+    @Autowired
     private AuthenticationManager authManager;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
@@ -48,7 +54,6 @@ public class UserController {
         }
 
         return ResponseEntity.ok(UserDTO.fromUser(optional.get()));
-
     }
 
     @GetMapping("/exists/{email}")
@@ -62,9 +67,9 @@ public class UserController {
         return ResponseEntity.ok().body(false);
     }
 
-    @PostMapping()
+    @PostMapping
     @Transactional
-    @CacheEvict(value = "users", allEntries = true)
+    @CacheEvict(value = "user", allEntries = true)
     public ResponseEntity register(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
 
         User user = userForm.toUser();
@@ -76,6 +81,15 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already registered!");
         }
 
+        Optional<Profile> profile = profileRepository.findById(RolesIdEnums.ROLE_USER_ID.getRoleId());
+
+        if (!profile.isPresent()) {
+            LOGGER.warn("Role not found.");
+        } else {
+            LOGGER.info("ROLE_USER added to user.");
+            user.getProfiles().add(profile.get());
+        }
+
         userRepository.save(user);
 
         URI uri = uriBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri();
@@ -85,7 +99,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     @Transactional
-    @CacheEvict(value = "users", allEntries = true)
+    @CacheEvict(value = "user", allEntries = true)
     public ResponseEntity update(@RequestBody @Valid UserUpdateForm userForm, UriComponentsBuilder uriBuilder, @PathVariable Long id) {
 
         URI uri = uriBuilder.path("/user/{id}").buildAndExpand(id).toUri();
@@ -107,7 +121,7 @@ public class UserController {
 
     @PutMapping("/pass/{id}")
     @Transactional
-    @CacheEvict(value = "users", allEntries = true)
+    @CacheEvict(value = "user", allEntries = true)
     public ResponseEntity updatePass(@RequestBody @Valid PassUpdateForm passUpdateForm, @PathVariable Long id) {
 
         Optional<User> optional = userRepository.findById(id);
@@ -141,7 +155,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    @CacheEvict(value = "users", allEntries = true)
+    @CacheEvict(value = "user", allEntries = true)
     public ResponseEntity delete(@PathVariable Long id) {
         return userRepository.findById(id).map(user -> {
             userRepository.delete(user);

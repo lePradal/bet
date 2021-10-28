@@ -4,19 +4,21 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="tb_bet_part")
-public class BetPart {
+@Table(name="tb_team")
+public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
+    private String imageUrl;
+
     private LocalDateTime creationDate = LocalDateTime.now();
 
-    private BetPart() {}
+    private Team() {}
 
-    public BetPart(String name) {
+    public Team(String name) {
         super();
         this.name = name;
     }
@@ -31,6 +33,14 @@ public class BetPart {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public LocalDateTime getCreationDate() {
